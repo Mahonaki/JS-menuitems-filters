@@ -87,31 +87,12 @@ const menu = [
 ];
 
 const sectionCenter = document.querySelector('.section-center');
-const filterBtns = document.querySelectorAll('.filter-btn');
+const container = document.querySelector('.btn-container');
 
 // load items
 window.addEventListener('DOMContentLoaded', function() {
     displayMenuItems(menu);
-});
-
-// filter items
-filterBtns.forEach(function(btn){
-    btn.addEventListener("click", function(e) {
-        const category = e.currentTarget.dataset.blahblah;
-        const menuCategory = menu.filter(function(menuItem){
-            // console.log(menuItem.category);
-            if(menuItem.category === category) {
-                return menuItem;
-            }
-        });
-        // console.log(menuCategory);
-        if(category === 'all') {
-            displayMenuItems(menu);
-        }
-        else {
-            displayMenuItems(menuCategory);
-        }
-    });
+    displayMenuBtns();
 });
 
 
@@ -133,3 +114,39 @@ function displayMenuItems(menuItems){
     sectionCenter.innerHTML = displayMenu;
 };
 
+function displayMenuBtns() {
+    const categories = menu.reduce(function(values,item){
+        if(!values.includes(item.category)) {
+            values.push(item.category);
+        }
+        return values;
+    }, ['all']);
+
+    const categoryBtns = categories.map(function(category){
+        return `<button class="filter-btn" type="button" data-blahblah=${category}>${category}</button>`
+    }).join("");
+    // console.log(categoryBtns);
+    container.innerHTML = categoryBtns;
+
+    const filterBtns = container.querySelectorAll('.filter-btn');
+
+    // filter items
+    filterBtns.forEach(function(btn){
+        btn.addEventListener("click", function(e) {
+            const category = e.currentTarget.dataset.blahblah;
+            const menuCategory = menu.filter(function(menuItem){
+                // console.log(menuItem.category);
+                if(menuItem.category === category) {
+                    return menuItem;
+                }
+            });
+            // console.log(menuCategory);
+            if(category === 'all') {
+                displayMenuItems(menu);
+            }
+            else {
+                displayMenuItems(menuCategory);
+            }
+        });
+    });
+};
